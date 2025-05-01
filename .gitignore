@@ -1,17 +1,26 @@
+# Fichiers Python compilés et cache
 __pycache__/
 *.py[cod]
+*.pyo
 *.log
-*.env
+
+# Base de données
 *.sqlite3
 *.db
 
-# Streamlit cache
-.streamlit/
-
 # Environnement virtuel
+.env/
 env/
 venv/
 
-# IDE files
+# Fichiers de config d'IDE
 .vscode/
 .idea/
+
+# Streamlit
+.streamlit/
+# (le dossier .streamlit/ peut parfois être utile si tu veux customiser le thème ou la config, mais à ignorer si tu n’as rien dedans)
+
+# Fichiers système (Windows/macOS/Linux)
+.DS_Store
+Thumbs.db
