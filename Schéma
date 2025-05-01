@@ -1,0 +1,13 @@
+royal_cosmetik/
+├── app.py          # Application principale
+├── database.py     # Configuration de la base de données
+├── pages/          # Pages de l'application
+│   ├── dashboard.py
+│   ├── stock.py
+│   ├── movements.py
+│   ├── orders.py
+│   ├── sales_history.py
+│   ├── analytics.py
+│   └── budget.py
+└── data/           # Dossier pour la base de données
+    └── royal_cosmetik.db
