@@ -125,12 +125,7 @@ def app():
         # Graphique à barres horizontales
         st.subheader("Histogramme des produits les plus vendus")
         fig, ax = plt.subplots(figsize=(10, 8))
-        fig.update_layout(
-        plot_bgcolor='#FAFAFA',
-        paper_bgcolor='#FFFFFF',
-        font=dict(color='#212121'),
-        title_font=dict(size=20, color='#4CAF50')
-    )
+      
 
         
         # Inverser l'ordre pour que le plus vendu soit en haut
