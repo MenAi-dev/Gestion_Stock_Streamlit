@@ -251,71 +251,68 @@ def generer_recu(commande_id, client, date, total, produits_commandes, produits_
     temp_file = tempfile.NamedTemporaryFile(delete=False, suffix=".pdf")
     c = canvas.Canvas(temp_file.name, pagesize=A4)
     largeur, hauteur = A4
-
-    # --- Logo (facultatif) ---
-    logo_path = "Assets/MoCosmetik.png"  # Chemin relatif dans votre projet
     
-    logo_added = False
+    # --- Logo centré en haut ---
+    logo_path = "Assets/MoCosmetik.png"
     if os.path.exists(logo_path):
         try:
             logo = ImageReader(logo_path)
-            c.drawImage(logo, 50, hauteur - 100, width=80, height=80)
-            logo_added = True
+            c.drawImage(logo, x=largeur/2 - 40, y=hauteur - 100, width=80, height=80, preserveAspectRatio=True, mask='auto')
         except Exception as e:
-            st.warning(f"Le logo local n'a pas pu être chargé : {e}")
+            st.warning(f"Le logo n’a pas pu être chargé : {e}")
     
-    # --- En-tête ---
-    c.setFont("Helvetica-Bold", 16)
-    c.drawString(150, hauteur - 50, "ROYAL COSMETIK - REÇU")
+    # --- Titre centré ---
+    c.setFont("Helvetica-Bold", 18)
+    c.drawCentredString(largeur / 2, hauteur - 120, "REÇU DE COMMANDE")
     
+    # --- Infos commande ---
     c.setFont("Helvetica", 11)
-    c.drawString(50, hauteur - 100, f"Commande n° : {commande_id}")
-    c.drawString(50, hauteur - 115, f"Client : {client}")
-    c.drawString(50, hauteur - 130, f"Date : {pd.to_datetime(date).strftime('%d/%m/%Y')}")
-
+    info_y = hauteur - 150
+    c.drawString(50, info_y, f"Commande n° : {commande_id}")
+    c.drawString(50, info_y - 15, f"Client     : {client}")
+    c.drawString(50, info_y - 30, f"Date       : {pd.to_datetime(date).strftime('%d/%m/%Y')}")
+    
     # --- Tableau des produits ---
+    table_start_y = info_y - 60
     c.setFont("Helvetica-Bold", 11)
-    y = hauteur - 170
-    c.drawString(50, y, "Produit")
-    c.drawString(250, y, "Quantité")
-    c.drawString(350, y, "Prix U.")
-    c.drawString(450, y, "Sous-total")
+    c.drawString(50, table_start_y, "Produit")
+    c.drawString(250, table_start_y, "Quantité")
+    c.drawString(350, table_start_y, "Prix U.")
+    c.drawString(450, table_start_y, "Sous-total")
     
     c.setFont("Helvetica", 10)
-    y -= 20
+    y = table_start_y - 20
     for item in produits_commandes:
         produit_id = item['id']
-        # Vérifier si le produit existe dans le DataFrame
         produit_row = produits_df[produits_df['id'] == produit_id]
-        
-        if not produit_row.empty:
-            nom = produit_row['nom'].iloc[0]
-        else:
-            # Si le produit n'est pas trouvé, utiliser un nom générique
-            nom = f"Produit ID: {produit_id}"
-            st.warning(f"Produit avec ID {produit_id} non trouvé dans la liste des produits")
-        
+        nom = produit_row['nom'].iloc[0] if not produit_row.empty else f"Produit ID: {produit_id}"
+        if produit_row.empty:
+            st.warning(f"Produit avec ID {produit_id} non trouvé")
+    
         quantite = item['quantite']
         prix_u = item['prix_unitaire']
         sous_total = quantite * prix_u
-
+    
         c.drawString(50, y, nom)
         c.drawString(250, y, str(quantite))
         c.drawString(350, y, f"{prix_u:,.0f} FCFA")
         c.drawString(450, y, f"{sous_total:,.0f} FCFA")
         y -= 18
-
-    # --- Total ---
+    
+    # --- Total général ---
+    y -= 10
     c.setFont("Helvetica-Bold", 12)
-    y -= 20
+    c.line(340, y, 500, y)
+    y -= 15
     c.drawString(350, y, "Total :")
     c.drawString(450, y, f"{total:,.0f} FCFA")
-
+    
     # --- Pied de page ---
-    y -= 40
+    footer_y = 40
     c.setFont("Helvetica-Oblique", 9)
-    c.drawString(50, y, "Merci pour votre achat ! Contact : client@royalcosmetik.ci")
-
+    c.drawCentredString(largeur / 2, footer_y, "Merci pour votre achat ! Contact : client@royalcosmetik.ci")
+    
+    # Sauvegarde du PDF
     c.save()
 
     # Lecture du PDF pour Streamlit
