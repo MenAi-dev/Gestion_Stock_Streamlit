@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_option_menu import option_menu as som
+from streamlit_option_menu import option_menu
 from modules import dashboard, stock, movements, orders, sales_history, analytics, budget
 
 # Configuration globale
@@ -57,7 +57,7 @@ PAGES = {
 
 
 
-selected=som(  
+selected=option_menu(  
     menu_title=None,  # Pas de titre de menu
     options=list(PAGES.keys()),  # Les titres des pages
     icons=["house", "box", "arrow-left-right", "cart", "file-earmark-text", "bar-chart-line", "cash"],  # Icônes pour chaque page
